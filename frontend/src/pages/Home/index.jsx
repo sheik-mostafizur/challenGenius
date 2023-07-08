@@ -1,22 +1,16 @@
-import Button from "../../components/Button";
+import Container from "../../components/Container";
 import Navbar from "../../components/Navbar";
 
 const Home = () => {
   return (
-    <>
-      <Navbar />
-      <div className="container mx-auto">
-        <Button
-          handleClick={() => {
-            console.log("clicked");
-          }}
-          text="Button"
-          className="rounded-full"
-          type="submit"
-          rounded={true}
-        />
-      </div>
-    </>
+    <div>
+      <header>
+        <Navbar />
+        <Container>
+          <h1 className="mt-24 text-center text-5xl font-bold">Home</h1>
+        </Container>
+      </header>
+    </div>
   );
 };
 

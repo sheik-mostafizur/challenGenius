@@ -72,7 +72,9 @@ const Navbar = () => {
         </div>
         <div className="flex items-center gap-4">
           <div>
-            <Button text="Login" />
+            <Link to="/login">
+              <Button text="Login" />
+            </Link>
           </div>
           <div>
             <BsFillMoonStarsFill
