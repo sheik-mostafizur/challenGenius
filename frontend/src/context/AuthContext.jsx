@@ -74,10 +74,12 @@ const AuthContext = ({children}) => {
       localStorage.setItem("theme", "light");
     }
   };
+  const isDark = localStorage.getItem("theme")==="dark";
   // end THEME handler
-
+  
   const userInfo = {
     handleThemeSwitch,
+    isDark,
     loading,
     user,
     createUser,
