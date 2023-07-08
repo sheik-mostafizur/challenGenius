@@ -35,17 +35,22 @@ const AuthContext = ({children}) => {
   // always check user is logged in or not
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      axios
-        .get(`/users/${currentUser?.email}`)
-        .then(function ({data}) {
-          const userData = {...currentUser, ...data};
-          setUser(userData);
-          setLoading(false);
-        })
-        .catch(function () {
-          logOutUser();
-          setLoading(false);
-        });
+      if (currentUser?.email) {
+        axios
+          .get(`/users/${currentUser?.email}`)
+          .then(function ({data}) {
+            const userData = {...currentUser, ...data};
+            setUser(userData);
+            setLoading(false);
+          })
+          .catch(function () {
+            logOutUser();
+            setLoading(false);
+          });
+      } else {
+        setUser(null);
+        setLoading(false);
+      }
     });
     return () => unsubscribe();
   }, []);

@@ -27,6 +27,7 @@ async function run() {
 
     const usersCollection = client.db("challenGenius").collection("users");
 
+    // =========== users routes ===========
     // create a user
     app.post("/users", async (req, res) => {
       const user = req.body;
@@ -71,6 +72,36 @@ async function run() {
       }
       const result = await usersCollection.deleteOne({_id: new ObjectId(id)});
       res.json(result);
+    });
+
+    // =============== admin routes ===============
+    // get all users
+    app.get("/admin/users", async (req, res) => {
+      const email = req.query.email;
+      if (!email) {
+        return res.status(400).json({message: "email not found!"});
+      }
+      const isAdmin = await usersCollection.findOne({
+        email,
+        role: "admin",
+      });
+      if (!isAdmin) {
+        return res.status(400).json({message: "Something went wrong!"});
+      }
+
+      const result = await usersCollection.find().toArray();
+      return res.json(result);
+    });
+
+    // delete a user
+    app.delete("/admin/users/:id", async (req, res) => {
+      const id = req.params.id;
+      if (!id) {
+        return res.status(400).json({message: "Something went wrong!"});
+      }
+      const result = await usersCollection.deleteOne({_id: new ObjectId(id)});
+      console.log(result);
+      res.send(result);
     });
 
     // Send a ping to confirm a successful connection
