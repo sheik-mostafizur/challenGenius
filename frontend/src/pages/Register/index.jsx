@@ -69,7 +69,7 @@ const Register = () => {
       <div className="mb-6">
         <label
           htmlFor={id}
-          className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+          className="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-400">
           {label}
         </label>
         <input
@@ -85,8 +85,8 @@ const Register = () => {
   };
 
   return (
-    <section className="flex h-screen items-center justify-center">
-      <div className="relative rounded-lg border p-8 shadow md:w-[450px]">
+    <section className="flex h-screen items-center justify-center dark:bg-gray-800">
+      <div className="relative rounded-lg border p-8 shadow dark:border-gray-600 dark:text-gray-400 md:w-[450px]">
         <h2 className="text-2xl font-bold">Register Your Account</h2>
         <div className="mt-4 flex items-center justify-center">
           <button
@@ -172,7 +172,7 @@ const Register = () => {
             Already have an account?{" "}
             <Link
               to="/login"
-              className="font-bold text-primary-700 hover:underline">
+              className="font-bold text-primary-700 hover:underline dark:text-gray-400">
               Login here
             </Link>
           </p>

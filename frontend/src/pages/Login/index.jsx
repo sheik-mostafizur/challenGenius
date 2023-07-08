@@ -39,8 +39,8 @@ const Login = () => {
   };
 
   return (
-    <section className="flex h-screen items-center justify-center">
-      <div className="relative rounded-lg border border-primary-100 p-8 shadow md:w-[450px]">
+    <section className="flex h-screen items-center justify-center dark:bg-gray-800">
+      <div className="relative rounded-lg border border-primary-100 p-8 shadow dark:border-gray-600 dark:text-gray-400 md:w-[450px]">
         <h2 className="text-center text-2xl font-bold">Log In Your Account</h2>
         <div className="mt-4 flex items-center justify-center">
           <button
@@ -65,7 +65,7 @@ const Login = () => {
           <div className="mb-6">
             <label
               htmlFor="email"
-              className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+              className="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-400">
               Your email
             </label>
             <input
@@ -79,7 +79,7 @@ const Login = () => {
           <div className="mb-6">
             <label
               htmlFor="password"
-              className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+              className="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-400">
               Your password
             </label>
             <input
@@ -96,7 +96,7 @@ const Login = () => {
             Don{`'`}t have an account?{" "}
             <Link
               to="/register"
-              className="font-bold text-primary-700 hover:underline">
+              className="font-bold text-primary-700 dark:text-gray-400 hover:underline">
               Register here
             </Link>
           </p>
