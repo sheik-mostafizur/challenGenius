@@ -27,7 +27,48 @@ async function run() {
 
     const usersCollection = client.db("challenGenius").collection("users");
 
-    // user
+    // create a user
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      if (!user.name || !user.email) {
+        return res.json({message: "data not found"});
+      }
+      // check user exist
+      const isExistUser = await usersCollection.findOne({email: user.email});
+
+      if (isExistUser) {
+        return res.json({message: "Already have user"});
+      }
+
+      const result = await usersCollection.insertOne(user);
+      return res.json(result);
+    });
+
+    // get all users
+    app.get("/users", async (req, res) => {
+      const result = await usersCollection.find().toArray();
+      return res.json(result);
+    });
+
+    // get a user using email
+    app.get("/users/:email", async (req, res) => {
+      const email = req.params.email;
+      if (!email) {
+        return res.json({message: "Failed to get user"});
+      }
+      const result = await usersCollection.findOne({email: email});
+      res.json(result);
+    });
+
+    // delete a user using id
+    app.delete("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      if (!id) {
+        return res.json("Failed to delete user!");
+      }
+      const result = await usersCollection.deleteOne({_id: new ObjectId(id)});
+      res.json(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ping: 1});
@@ -43,7 +84,7 @@ run().catch(console.dir);
 
 // route
 app.get("/", (req, res) => {
-  res.send("<h1>Server side running!</h1>");
+  res.json("<h1>Server side running!</h1>");
 });
 
 app.listen(PORT, () =>
