@@ -57,6 +57,9 @@ async function run() {
         return res.status(400).json({message: "Failed to get user"});
       }
       const result = await usersCollection.findOne({email: email});
+      if (!result) {
+        return res.status(400).json({message: "data not found!"});
+      }
       res.json(result);
     });
 

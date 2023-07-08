@@ -3,8 +3,10 @@ import {Link, useLocation, useNavigate} from "react-router-dom";
 
 import {uesAuthContext} from "../../context/AuthContext";
 import Button from "../../components/Button";
+import axios from "axios";
+import Swal from "sweetalert2";
 const Login = () => {
-  const {logInUser, logInUserWithGoogle} = uesAuthContext();
+  const {logInUser, logInUserWithGoogle, logOutUser} = uesAuthContext();
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -21,9 +23,32 @@ const Login = () => {
     // login using email and password
     logInUser(email, password)
       .then(() => {
+        axios
+          .get(`/users/${email}`)
+          .then(function () {
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Goggle Logged In Successfully!",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            navigate(from, {replace: true});
+          })
+          .catch(function (error) {
+            Swal.fire({
+              position: "center",
+              icon: "error",
+              title: error.message,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            logOutUser()
+              .then()
+              .catch((error) => console.log(error));
+          });
         setError("");
         form.reset();
-        navigate(from, {replace: true});
       })
       .catch((error) => setError(error.message));
   };
@@ -31,11 +56,33 @@ const Login = () => {
   // google authentication handle
   const handleLoginWithGoogle = () => {
     logInUserWithGoogle()
-      .then(() => {
-        setError("");
-        navigate(from, {replace: true});
+      .then(({user}) => {
+        axios
+          .get(`/users/${user?.email}`)
+          .then(function () {
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Goggle Logged In Successfully!",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            navigate(from, {replace: true});
+          })
+          .catch(function (error) {
+            Swal.fire({
+              position: "center",
+              icon: "error",
+              title: error.message,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            logOutUser()
+              .then()
+              .catch((error) => console.log(error));
+          });
       })
-      .catch((error) => setError(error.message));
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -96,7 +143,7 @@ const Login = () => {
             Don{`'`}t have an account?{" "}
             <Link
               to="/register"
-              className="font-bold text-primary-700 dark:text-gray-400 hover:underline">
+              className="font-bold text-primary-700 hover:underline dark:text-gray-400">
               Register here
             </Link>
           </p>
