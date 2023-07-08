@@ -7,7 +7,8 @@ import {
 } from "@firebase/auth";
 import {createContext, useContext, useEffect, useState} from "react";
 import {auth, googleProvider} from "../config/firebase.js";
-import LoaderSpinner from "../components/LoderSpinner/index.jsx";
+import LoaderSpinner from "../components/LoaderSpinner/index.jsx";
+import axios from "axios";
 
 const UserContext = createContext({});
 
@@ -33,10 +34,18 @@ const AuthContext = ({children}) => {
 
   // always check user is logged in or not
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (res) => {
-      res ? setUser(res) : setUser(null);
-      // if user is logged in successfully the loading stopped
-      setLoading(false);
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      axios
+        .get(`/users/${currentUser?.email}`)
+        .then(function ({data}) {
+          const userData = {...currentUser, ...data};
+          setUser(userData);
+          setLoading(false);
+        })
+        .catch(function () {
+          logOutUser();
+          setLoading(false);
+        });
     });
     return () => unsubscribe();
   }, []);
@@ -74,9 +83,9 @@ const AuthContext = ({children}) => {
       localStorage.setItem("theme", "light");
     }
   };
-  const isDark = localStorage.getItem("theme")==="dark";
+  const isDark = localStorage.getItem("theme") === "dark";
   // end THEME handler
-  
+
   const userInfo = {
     handleThemeSwitch,
     isDark,
@@ -91,7 +100,7 @@ const AuthContext = ({children}) => {
   return (
     <UserContext.Provider value={userInfo}>
       {loading ? (
-        <div className="h-screen flex flex-col justify-center items-center">
+        <div className="flex h-screen flex-col items-center justify-center">
           <LoaderSpinner />
         </div>
       ) : (
