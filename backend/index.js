@@ -31,13 +31,13 @@ async function run() {
     app.post("/users", async (req, res) => {
       const user = req.body;
       if (!user.name || !user.email) {
-        return res.json({message: "data not found"});
+        return res.status(400).json({message: "data not found"});
       }
       // check user exist
       const isExistUser = await usersCollection.findOne({email: user.email});
 
       if (isExistUser) {
-        return res.json({message: "Already have user"});
+        return res.status(400).json({message: "Already have user"});
       }
 
       const result = await usersCollection.insertOne(user);
@@ -54,7 +54,7 @@ async function run() {
     app.get("/users/:email", async (req, res) => {
       const email = req.params.email;
       if (!email) {
-        return res.json({message: "Failed to get user"});
+        return res.status(400).json({message: "Failed to get user"});
       }
       const result = await usersCollection.findOne({email: email});
       res.json(result);

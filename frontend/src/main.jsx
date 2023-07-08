@@ -4,6 +4,10 @@ import "./index.css";
 import router from "./routes/router";
 import {RouterProvider} from "react-router-dom";
 import AuthContext from "./context/AuthContext";
+import axios from "axios";
+
+// backend url
+axios.defaults.baseURL = "http://localhost:3001";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

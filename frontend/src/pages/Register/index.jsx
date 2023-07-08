@@ -3,10 +3,12 @@ import {updateProfile} from "@firebase/auth";
 import {auth} from "../../config/firebase";
 import {useForm} from "react-hook-form";
 import {uesAuthContext} from "../../context/AuthContext";
+import axios from "axios";
+import Swal from "sweetalert2";
 import Button from "../../components/Button";
 
 const Register = () => {
-  const {createUser, logInUserWithGoogle} = uesAuthContext();
+  const {createUser, logInUserWithGoogle, logOutUser} = uesAuthContext();
   const {
     register,
     handleSubmit,
@@ -40,8 +42,41 @@ const Register = () => {
               message: error.message,
             });
           });
+
+        axios
+          .post("/users", {
+            name,
+            email,
+          })
+          .then(function () {
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Goggle Logged In Successfully!",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            setError("");
+            navigate("/");
+          })
+          .catch(function () {
+            Swal.fire({
+              position: "center",
+              icon: "error",
+              title: "Already user exist!",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          });
       })
       .catch((error) => {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Already user exist!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
         return setError("firebase-create-account", {
           type: "manual",
           message: error.message,
@@ -52,9 +87,34 @@ const Register = () => {
   // google authentication handle
   const handleLoginWithGoogle = () => {
     logInUserWithGoogle()
-      .then(() => {
-        setError("");
-        navigate("/");
+      .then(({user}) => {
+        const newUser = {
+          name: user?.displayName || "unknown",
+          email: user?.email,
+        };
+        axios
+          .post("/users", newUser)
+          .then(function () {
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Goggle Logged In Successfully!",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            setError("");
+            navigate("/");
+          })
+          .catch(function () {
+            logOutUser();
+            Swal.fire({
+              position: "center",
+              icon: "error",
+              title: "Already user exist!",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          });
       })
       .catch((error) => setError("logInUser", error.message));
   };
