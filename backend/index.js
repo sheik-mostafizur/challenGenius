@@ -26,6 +26,7 @@ async function run() {
     // await client.connect();
 
     const usersCollection = client.db("challenGenius").collection("users");
+    const coursesCollection = client.db("challenGenius").collection("courses");
 
     // =========== users routes ===========
     // create a user
@@ -100,8 +101,46 @@ async function run() {
         return res.status(400).json({message: "Something went wrong!"});
       }
       const result = await usersCollection.deleteOne({_id: new ObjectId(id)});
-      console.log(result);
       res.send(result);
+    });
+
+    // =============== admin courses routes ===============
+
+    // create a courses collection
+    app.post("/admin/courses", async (req, res) => {
+      const course = req.body;
+      if (!course) {
+        return res.status(400).json({message: "data not found"});
+      }
+      const result = await coursesCollection.insertOne(course);
+      return res.json(result);
+    });
+
+    // get all courses
+    app.get("/admin/courses", async (req, res) => {
+      const result = await coursesCollection.find().toArray();
+      return res.json(result);
+    });
+
+    // get a course from courses
+    app.get("/admin/courses/:id", async (req, res) => {
+      const id = req.params.id;
+      if (!id) {
+        return res.json("Failed!");
+      }
+      const result = await coursesCollection.findOne({_id: new ObjectId(id)});
+      res.json(result);
+    });
+
+    // update a course from courses
+    app.put("/admin/courses/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedDoc = req.body;
+      const result = await coursesCollection.updateOne(
+        {_id: new ObjectId(id)},
+        {$set: updatedDoc}
+      );
+      res.json(result);
     });
 
     // Send a ping to confirm a successful connection

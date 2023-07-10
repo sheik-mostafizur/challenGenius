@@ -56,11 +56,11 @@ const Navbar = () => {
             </li>
             <li>
               <NavLink
-                to="/about"
+                to="/courses"
                 className={({isActive}) =>
                   isActive ? linkStyleActive : linkStyle
                 }>
-                About
+                Courses
               </NavLink>
             </li>
           </ul>

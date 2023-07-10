@@ -3,6 +3,7 @@ import {uesAuthContext} from "../../../context/AuthContext";
 import axios from "axios";
 import LoaderSpinner from "../../../components/LoaderSpinner";
 import Swal from "sweetalert2";
+import Container from "../../../components/Container";
 
 const AdminUsers = () => {
   const {user} = uesAuthContext();
@@ -43,34 +44,47 @@ const AdminUsers = () => {
   return (
     <div>
       <h1>AdminUsers</h1>
-      {isLoading ? (
-        <LoaderSpinner />
-      ) : (
-        <>
-          {loadedUsers &&
-            loadedUsers.map((user) => {
-              return (
-                <div
-                  key={user?._id}
-                  className="my-2 border border-primary-600 p-4">
-                  <h3>Name: {user.name}</h3>
-                  <p>Email: {user.email}</p>
-                  {user?.role && (
-                    <p className="bg-primary-700 text-white">
-                      Role: {user?.role}
+      <Container>
+        {isLoading ? (
+          <LoaderSpinner />
+        ) : (
+          <>
+            {loadedUsers &&
+              loadedUsers.map((user) => {
+                return (
+                  <div
+                    key={user?._id}
+                    className="my-2 border border-primary-600 p-4">
+                    <p>
+                      <b>ID: </b>
+                      {user._id}
                     </p>
-                  )}
-                  <button
-                    onClick={() => handleDelete(user?._id)}
-                    disabled={user?.role}
-                    className="font-medium text-red-600 hover:underline dark:text-red-500">
-                    Delate
-                  </button>
-                </div>
-              );
-            })}
-        </>
-      )}
+                    <p>
+                      <b>Name: </b>
+                      {user.name}
+                    </p>
+                    <p>
+                      <b>Email: </b>
+                      {user.email}
+                    </p>
+                    {user?.role && (
+                      <p className="bg-primary-700 text-white">
+                        <b>Role: </b>
+                        {user?.role}
+                      </p>
+                    )}
+                    <button
+                      onClick={() => handleDelete(user?._id)}
+                      disabled={user?.role}
+                      className="font-medium text-red-600 hover:underline dark:text-red-500">
+                      Delate
+                    </button>
+                  </div>
+                );
+              })}
+          </>
+        )}
+      </Container>
     </div>
   );
 };

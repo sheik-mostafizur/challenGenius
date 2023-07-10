@@ -1,0 +1,11 @@
+.szh-accordion__item {
+  border: 1px solid #ccc;
+  margin: 5px 0;
+  padding: 5px;
+}
+.szh-accordion__item-panel {
+  background-color: #d6f2ff;
+  padding: 5px;
+  margin-left: -5px;
+  margin-bottom: -5px;
+}

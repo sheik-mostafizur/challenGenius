@@ -7,6 +7,12 @@ import PrivateRoute from "./PrivateRoute";
 import Dashboard from "../pages/Dashboard";
 import DashboardHome from "../pages/Dashboard/DashboardHome";
 import AdminUsers from "../pages/Admin/AdminUsers";
+import PrivateRouteAdmin from "./PrivateRouteAdmin";
+import AdminCourses from "../pages/Admin/AdminCourses";
+import AdminModules from "../pages/Admin/AdminModules";
+import AdminCoursesAdd from "../pages/Admin/AdminCourses/AdminCoursesAdd";
+import AdminCoursesUpdate from "../pages/Admin/AdminCourses/AdminCoursesUpdate";
+import axios from "axios";
 
 const router = createBrowserRouter([
   {
@@ -39,7 +45,45 @@ const router = createBrowserRouter([
       // for admin
       {
         path: "users",
-        element: <AdminUsers />,
+        element: (
+          <PrivateRouteAdmin>
+            <AdminUsers />
+          </PrivateRouteAdmin>
+        ),
+      },
+      // courses
+      {
+        path: "courses",
+        element: (
+          <PrivateRouteAdmin>
+            <AdminCourses />
+          </PrivateRouteAdmin>
+        ),
+      },
+      {
+        path: "courses/add",
+        element: (
+          <PrivateRouteAdmin>
+            <AdminCoursesAdd />
+          </PrivateRouteAdmin>
+        ),
+      },
+      {
+        path: "courses/update/:id",
+        element: (
+          <PrivateRouteAdmin>
+            <AdminCoursesUpdate />
+          </PrivateRouteAdmin>
+        ),
+        loader: ({params}) => axios.get(`/admin/courses/${params.id}`),
+      },
+      {
+        path: "courses/:id",
+        element: (
+          <PrivateRouteAdmin>
+            <AdminModules />
+          </PrivateRouteAdmin>
+        ),
       },
     ],
   },
