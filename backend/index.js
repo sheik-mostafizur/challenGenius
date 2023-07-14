@@ -27,6 +27,9 @@ async function run() {
 
     const usersCollection = client.db("challenGenius").collection("users");
     const coursesCollection = client.db("challenGenius").collection("courses");
+    const htmlAndCSSCollection = client
+      .db("challenGenius")
+      .collection("htmlAndCSS");
 
     // =========== users routes ===========
     // create a user
@@ -104,6 +107,69 @@ async function run() {
       res.send(result);
     });
 
+    // =============== admin course modules routes ===============
+
+    // get modules count number
+    app.get("/admin/courses/:id/modules/total-modules", async (req, res) => {
+      // 64ad76891e5665a2fbd40732 for HTML
+      if (req.params.id !== "64ad76891e5665a2fbd40732") {
+        return res.send("Something is wrong");
+      }
+      const result = await htmlAndCSSCollection.find().toArray();
+      const totalModules = result.length;
+      return res.json(totalModules);
+    });
+
+    // post a module
+    app.post("/admin/courses/:id/modules", async (req, res) => {
+      // 64ad76891e5665a2fbd40732 for HTML
+      if (req.params.id !== "64ad76891e5665a2fbd40732") {
+        return res.send("Something is wrong");
+      }
+      const module = req.body;
+      if (!module) {
+        return res.status(400).json({message: "data not found"});
+      }
+      const result = await htmlAndCSSCollection.insertOne(module);
+      return res.json(result);
+    });
+
+    // get all modules
+    app.get("/admin/courses/:id/modules", async (req, res) => {
+      // 64ad76891e5665a2fbd40732 for HTML
+      if (req.params.id !== "64ad76891e5665a2fbd40732") {
+        return res.send("Something is wrong");
+      }
+      const result = await htmlAndCSSCollection.find().toArray();
+      return res.json(result);
+    });
+
+    // get a module
+    app.get("/admin/courses/:courseId/modules/:id", async (req, res) => {
+      // 64ad76891e5665a2fbd40732 for HTML
+      if (req.params.courseId !== "64ad76891e5665a2fbd40732") {
+        return res.send("Something is wrong");
+      }
+      const result = await htmlAndCSSCollection.findOne({
+        _id: new ObjectId(req.params.id),
+      });
+      return res.json(result);
+    });
+
+    // update a module
+    app.put("/admin/courses/:courseId/modules/:id", async (req, res) => {
+      // 64ad76891e5665a2fbd40732 for HTML
+      if (req.params.courseId !== "64ad76891e5665a2fbd40732") {
+        return res.send("Something is wrong");
+      }
+      const updatedDoc = req.body;
+      const result = await htmlAndCSSCollection.updateOne(
+        {_id: new ObjectId(req.params.id)},
+        {$set: updatedDoc}
+      );
+      res.json(result);
+    });
+
     // =============== admin courses routes ===============
 
     // create a courses collection
@@ -140,6 +206,21 @@ async function run() {
         {_id: new ObjectId(id)},
         {$set: updatedDoc}
       );
+      res.json(result);
+    });
+
+    // =============== courses routes ===============
+    // get courses
+    app.get("/courses", async (req, res) => {
+      const result = await coursesCollection.find().toArray();
+      res.json(result);
+    });
+
+    // get a course
+    app.get("/courses/:id", async (req, res) => {
+      const result = await coursesCollection.findOne({
+        _id: new ObjectId(req.params.id),
+      });
       res.json(result);
     });
 

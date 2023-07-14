@@ -1,22 +1,27 @@
-import {Accordion, AccordionItem} from "@szhsin/react-accordion";
+// import {Accordion, AccordionItem} from "@szhsin/react-accordion";
 import "./style.css";
 import {useState} from "react";
 import Button from "../../../components/Button";
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
+import axios from "axios";
+import {useQuery} from "@tanstack/react-query";
+import {BiEdit} from "react-icons/bi";
 const AdminModules = () => {
-  const [showLesson, setShowLesson] = useState({});
-  const lessons = [
-    {
-      id: 1,
-      title: "Lessons One",
-      description: "one lorem ipsum dolor sit amet, consectetur adip",
+  const {id: courseId} = useParams();
+  const {
+    data: loadedModules,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: [`${courseId}-module`],
+    queryFn: async () => {
+      const response = await axios.get(`/admin/courses/${courseId}/modules/`);
+      return response.data;
     },
-    {
-      id: 2,
-      title: "Lessons Two",
-      description: "two lorem ipsum dolor sit amet, consectetur adip",
-    },
-  ];
+  });
+
+  const [showContent, setShowContent] = useState({});
+
   return (
     <div>
       <section className="mb-8 flex items-center justify-between">
@@ -26,12 +31,38 @@ const AdminModules = () => {
         </Link>
       </section>
       <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <div className="bg-primary-100">
-          {showLesson?.id}
-          <h2>{showLesson?.title}</h2>
-          {showLesson?.description}
+        <div className="relative bg-primary-100">
+          {Object.keys(showContent).length ? (
+            <>
+              <Link to={`modules/update/${showContent._id}`}>
+                <button>
+                  <BiEdit className="absolute right-2 rounded-md bg-primary-100 text-3xl text-primary-600" />
+                </button>
+              </Link>
+              {showContent?._id}
+              <h2>{showContent?.title}</h2>
+              <div
+                className="bg-primary-200 p-1"
+                dangerouslySetInnerHTML={{__html: showContent?.content}}
+              />
+            </>
+          ) : (
+            "Click module"
+          )}
         </div>
         <div>
+          {loadedModules &&
+            loadedModules.map((module) => (
+              <div key={module._id}>
+                <h4
+                  className="my-1 cursor-pointer bg-primary-50"
+                  onClick={() => setShowContent(module)}>
+                  {module.moduleNumber} Module: {module.title}
+                </h4>
+              </div>
+            ))}
+        </div>
+        {/* <div>
           <Accordion>
             <AccordionItem header="What is Lorem Ipsum?">
               {lessons.map((lesson) => {
@@ -46,7 +77,7 @@ const AdminModules = () => {
               })}
             </AccordionItem>
           </Accordion>
-        </div>
+        </div> */}
       </section>
     </div>
   );

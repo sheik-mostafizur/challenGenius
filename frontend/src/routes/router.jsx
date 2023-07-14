@@ -13,6 +13,10 @@ import AdminModules from "../pages/Admin/AdminModules";
 import AdminCoursesAdd from "../pages/Admin/AdminCourses/AdminCoursesAdd";
 import AdminCoursesUpdate from "../pages/Admin/AdminCourses/AdminCoursesUpdate";
 import axios from "axios";
+import AdminModulesAdd from "../pages/Admin/AdminModules/AdminModulesAdd";
+import AdminModulesUpdate from "../pages/Admin/AdminModules/AdminModulesUpdate";
+import Courses from "../pages/Courses";
+import Enroll from "../pages/Enroll";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +31,19 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <Register />,
+  },
+  {
+    path: "/courses",
+    element: <Courses />,
+  },
+  {
+    path: "/enroll/:id",
+    element: (
+      <PrivateRoute>
+        <Enroll />
+      </PrivateRoute>
+    ),
+    loader: ({params}) => axios.get(`/courses/${params.id}/`),
   },
   // Dashboard
   {
@@ -84,6 +101,27 @@ const router = createBrowserRouter([
             <AdminModules />
           </PrivateRouteAdmin>
         ),
+      },
+      // modules
+      {
+        path: "courses/:id/modules/add",
+        element: (
+          <PrivateRouteAdmin>
+            <AdminModulesAdd />
+          </PrivateRouteAdmin>
+        ),
+        loader: ({params}) =>
+          axios.get(`/admin/courses/${params.id}/modules/total-modules`),
+      },
+      {
+        path: "courses/:courseId/modules/update/:id",
+        element: (
+          <PrivateRouteAdmin>
+            <AdminModulesUpdate />
+          </PrivateRouteAdmin>
+        ),
+        loader: ({params}) =>
+          axios.get(`/admin/courses/${params.courseId}/modules/${params.id}`),
       },
     ],
   },
