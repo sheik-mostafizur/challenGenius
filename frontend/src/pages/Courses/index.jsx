@@ -33,6 +33,10 @@ const Courses = () => {
                   <b>Total Students: </b>
                   {course?.totalStudents || "0"}
                 </p>
+                <p>
+                  <b>Price: </b>
+                  {course?.price || "0"} Taka
+                </p>
                 <Link to={`/enroll/${course._id}`}>
                   <Button text="Enroll Now" size="lg" />
                 </Link>

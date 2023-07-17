@@ -73,6 +73,10 @@ const AdminCourses = () => {
                   <b>Total Students: </b>
                   {course?.totalStudents || "0"}
                 </p>
+                <p>
+              <b>Price: </b>
+              {course?.price || "0"} Taka
+            </p>
                 <Link to={course._id}>
                   <Button
                     text="View Modules"

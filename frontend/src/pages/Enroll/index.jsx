@@ -6,14 +6,28 @@ import Container from "../../components/Container";
 import Button from "../../components/Button";
 import {useForm} from "react-hook-form";
 import {uesAuthContext} from "../../context/AuthContext";
+import Swal from "sweetalert2";
 
 const Enroll = () => {
   const {user} = uesAuthContext();
   const {data: loadedCourse} = useLoaderData();
   const {register, handleSubmit, reset} = useForm();
   const onSubmit = (data) => {
-    data.status= 'pending';
-    console.table(data);
+    data.status = "pending";
+    axios
+      .post("/payments", data)
+      .then(({data}) => {
+        if (data.insertedId) {
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Payment Successfully!",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      })
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -30,6 +44,10 @@ const Enroll = () => {
             <p>
               <b>Total Students: </b>
               {loadedCourse?.totalStudents || "0"}
+            </p>
+            <p>
+              <b>Price: </b>
+              {loadedCourse?.price || "0"} Taka
             </p>
           </div>
           <div className="min-w-[500px]">

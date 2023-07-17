@@ -30,6 +30,9 @@ async function run() {
     const htmlAndCSSCollection = client
       .db("challenGenius")
       .collection("htmlAndCSS");
+    const paymentsCollection = client
+      .db("challenGenius")
+      .collection("payments");
 
     // =========== users routes ===========
     // create a user
@@ -224,6 +227,30 @@ async function run() {
       res.json(result);
     });
 
+    // =============== enrolled courses routes ===============
+
+    // =============== payments courses routes ===============
+    // post a payments
+    app.post("/payments", async (req, res) => {
+      const paymentDetails = req.body;
+
+      const isExist = await paymentsCollection.findOne({
+        courseId: paymentDetails.courseId,
+        email: paymentDetails.email,
+      });
+      if (isExist) {
+        return res.status(409).json("Already enrolled");
+      }
+      const result = await paymentsCollection.insertOne(paymentDetails);
+      res.json(result);
+    });
+
+    // get payments
+    app.get("/payments", async (req, res) => {
+      const result = await paymentsCollection.find().toArray();
+      res.json(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ping: 1});
     console.log(
@@ -238,7 +265,7 @@ run().catch(console.dir);
 
 // route
 app.get("/", (req, res) => {
-  res.json("<h1>Server side running!</h1>");
+  res.send("<h1>Server side running!</h1>");
 });
 
 app.listen(PORT, () =>
